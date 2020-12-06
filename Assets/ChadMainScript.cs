@@ -12,10 +12,14 @@ public class ChadMainScript : MonoBehaviour
     public Rigidbody2D rb;
     public float WalkSpeed;
     public float WalkAcceleration;
+    public float jumpHeight;
+    Vector2 jump;
+    bool isGrounded;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        jump = new Vector2(0, jumpHeight);   
     }
 
     // Update is called once per frame
@@ -41,13 +45,35 @@ public class ChadMainScript : MonoBehaviour
         {
             ChadState = State.idle;
         }
-
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(jump);
+        }
 
 
         if (ChadState == State.walking)
         {
             Vector3 WalkingVector = new Vector3(transform.right.x * WalkSpeed * (int)ChadDirection,0,0);
             rb.velocity = new Vector2(WalkingVector.x, rb.velocity.y);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            isGrounded = true;
+        }
+        
+    }
+
+    //bruh
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            isGrounded = false;
         }
     }
 }
